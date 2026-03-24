@@ -1,4 +1,5 @@
 import Subscription.Subscription
+import Post.Post
 
 object Main {
   def main(args: Array[String]): Unit = {
@@ -6,18 +7,18 @@ object Main {
 
     val subscriptions: List[Subscription] = FileIO.readSubscriptions("subscriptions.json")
     
-    val allPosts: List[Subscription] = subscriptions.map { suscription =>
-      val subredditName = suscription._1
-      val url = suscription._2
+    val allPosts: List[(String, String)] = subscriptions.map { subscription =>
+      val (subredditName, url) = subscription
       println(s"Fetching posts from: $subredditName")
       val posts = FileIO.downloadFeed(url)
-      (url, posts)
+      (subredditName, posts)
     }
-
+        
     val output = allPosts
       .map { case (url, posts) => Formatters.formatSubscription(url, posts) }
       .mkString("\n")
 
     println(output)
+    
   }
 }

@@ -1,3 +1,4 @@
 object Subscription {
-  type Subscription = (String,String)
+  type Subscription = (String,String) // (subredditName, url) 
+
 }
