@@ -1,17 +1,25 @@
-import Subscription.Subscription
 import scala.io.Source
+import org.json4s._
+import org.json4s.jackson.JsonMethods._
+import scala.util.Using
+
+import Subscription._
 
 object FileIO {
+  implicit val formats: Formats = DefaultFormats
+
   // Pure function to read subscriptions from a JSON file
-  def readSubscriptions(): List[Subscription] = {
+  def readSubscriptions(subscriptionsFile: String): List[Subscription] = {
+    val content = Using(Source.fromFile(subscriptionsFile)) { source =>
+      source.mkString
+    }.get
 
-
-    val source = Source.fromFile("subscriptions.json","UTF-8")
-    try{
-
-      //Do something
-    }finally{
-      source.close()
+    // parse the json file and convert its content into a list of hashmaps
+    val json = parse(content)
+    val jsonMap = json.extract[List[Map[String, String]]]
+    
+    jsonMap.map { sub =>
+      (sub("name"), sub("url"))
     }
   }
 
@@ -21,4 +29,3 @@ object FileIO {
     source.mkString
   }
 }
-//List[Subscription] = ["{"name":"asjkdhasd","url":"akjshdkjasd"}"];
