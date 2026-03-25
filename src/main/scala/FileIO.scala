@@ -9,6 +9,7 @@ import Post.Post
 
 object FileIO {
   implicit val formats: Formats = DefaultFormats
+  
 
   // Pure function to read subscriptions from a JSON file
   def readSubscriptions(subscriptionsFile: String): List[Subscription] = {
@@ -30,8 +31,15 @@ object FileIO {
   def parsePosts(subredditName: String, posts: String): List[Post] = {
     val json = parse(posts)
     val children = (json \ "data" \ "children").children
-    
-    children.map { child =>
+
+    // Filtrar posts vacios (titulo o cuerpo solo con espacios o vacio)
+    children.filter{ child => 
+      val data       = child \ "data"
+      val title      = (data \ "title").extract[String]
+      val selftext   = (data \ "selftext").extract[String]
+      title.trim.nonEmpty && selftext.trim.nonEmpty
+    }
+    .map { child =>
       val data       = child \ "data"
       val title      = (data \ "title").extract[String]
       val selftext   = (data \ "selftext").extract[String]
