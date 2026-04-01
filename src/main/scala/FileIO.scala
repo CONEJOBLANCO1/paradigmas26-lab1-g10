@@ -29,7 +29,7 @@ object FileIO {
     }catch{
       case e : Exception =>
         println(s"Error reading subscriptions from ${subscriptionsFile}: ${e.getMessage}")
-        [("")]
+        List.empty  // or List() or Nil
     }
   }
   
