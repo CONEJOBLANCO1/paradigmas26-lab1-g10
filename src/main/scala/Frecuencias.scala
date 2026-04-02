@@ -28,13 +28,14 @@ object Frequencies {
     .map(p => p._3)
     .flatMap(text => text.split("\\s+"))
     .map(cleanWord) // clean words with trash
-    .flatMap(text => text.split("\\s+"))
+    .filter(_.nonEmpty)
     .filter(word => word.length > 0 && word(0).isUpper)
     .filter(word => !stopwords.contains(word.toLowerCase))
     .groupBy(word => word)
     .mapValues(_.size)
     .toMap
    }
+  
   def cleanWord(word: String): String = {
     word.replaceAll("[^a-zA-ZáéíóúÁÉÍÓÚñÑ]", "")  // removes everything that isnt a letter
   }
